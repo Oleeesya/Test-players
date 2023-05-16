@@ -1,11 +1,11 @@
 <template>
 <div>
   <div
-    v-for="(item, index) in usersLife"
-    :key="item.name"
+    v-for="(item, index) in playersList"
+    :key="index"
     class="edit row"
   >
-      <input class="edit__name" id="name" v-model="item.name">
+      <input class="edit__name" id="name" :value="isValidName ? item.name : playersList[index].name" @input="event => changeName(index, event.target.value, item.name)">
       <button class="edit__button" href="#" @click.prevent="minusLife(index)">-</button>
       <span class="edit__lifeCount">{{item.life}}</span>
       <button class="edit__button" href="#" @click.prevent="plusLife(index)">+</button>
@@ -36,20 +36,18 @@ export default {
   
   data () {
     return {
+      isValidName: true
     };
   },
   
   computed: {
-    usersLife () {
-      return [...this.playersList]
-    },
     rating () {
       let stableSort = (arr, compare) => arr
           .map((item, index) => ({item, index}))
           .sort((a, b) => compare(a.item, b.item) || a.index - b.index)
           .map(({item}) => item)
 
-      return stableSort(this.usersLife, (a, b) => b.life - a.life);
+      return stableSort(this.playersList, (a, b) => b.life - a.life);
     }
   },
   
@@ -57,9 +55,21 @@ export default {
     plusLife (index) {
       this.$emit('plus-life', index);
     },
+
     minusLife (index) {
       this.$emit('minus-life', index);
     },
+    
+    changeName(index, newName) {
+      this.isValidName = true
+      if(this.playersList.filter(item => this.playersList.indexOf(item) !== index).map(item => item.name).includes(newName)) {
+          alert('Пользователь с таким именем уже существует');
+          this.isValidName = false
+          return
+      }      
+      this.$emit('change-name', index, newName);
+      return newName
+    }
   },
 }
 </script>
@@ -138,6 +148,7 @@ export default {
         height: 38px;
         padding: 0;
         width: 10%;
+        color: #2c3e50;
     }
 
     .edit__button:hover {

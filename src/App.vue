@@ -10,7 +10,7 @@
     </label>
   </div>
   <CreatePlayer @players-list="createPlayers" v-show="showCreate" />
-  <EditPlayers @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList" v-show="showEdit" />
+  <EditPlayers @change-name="changeName" @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList" v-show="showEdit" />
 </template>
 
 <script>
@@ -42,6 +42,7 @@ export default {
           'life': life,
       })
     },
+    
     showMenu() {
       let radios = document.getElementsByName('menu');
       for (let radio of radios) {
@@ -55,6 +56,10 @@ export default {
           }
         }
       }
+    },
+
+    changeName (index, newName) {
+      this.playersList[index].name = newName
     },
 
     plusLife (index) {

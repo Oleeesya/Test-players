@@ -1,5 +1,7 @@
 # Тестовое задание - "Игроки"
 [Ссылка](https://github.com/gorlitsyn/Test-players) на исходное задание.
+[Ссылка](https://oleeesya.github.io/Test-players/) на github-pages.
+
 
 # Задание
 1. Отделить отображение 2х компонентов. Сделать переключение между 

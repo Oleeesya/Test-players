@@ -104,6 +104,7 @@ export default {
         height: 38px;
         width: 20%;
         padding: 0.375rem 0.75rem;
+        color: #2c3e50;
     }
 
     .create__btn:hover {
