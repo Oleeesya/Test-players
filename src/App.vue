@@ -1,6 +1,16 @@
 <template>
-  <CreatePlayer @players-list="createdPlayers" />
-  <EditPlayers :playersList="playersList" />
+  <div class="menu">
+    <input @click="showMenu" class="menu__input" type="radio" name="menu" id="create" value="create" checked>
+    <label class="menu__create" for="create">
+        <h1>Добавить нового игрока</h1>
+    </label>
+    <input @click="showMenu" class="menu__input" type="radio" name="menu" id="edit" value="edit">
+    <label class="menu__edit" for="edit">  
+        <h1>Редактирование игроков</h1>
+    </label>
+  </div>
+  <CreatePlayer @players-list="createPlayers" v-show="showCreate" />
+  <EditPlayers @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList" v-show="showEdit" />
 </template>
 
 <script>
@@ -15,18 +25,49 @@ export default {
   },
   data() {
     return {
-      playersList: []
+      playersList: [],
+      showCreate: true,
+      showEdit: false,
     }
-  },
-
-  created() {
-    
   },
 
   methods: {
-    createdPlayers(list) {
-      this.playersList = list;
-    }
+    createPlayers(name, life) {
+      if(this.playersList.map(item => item.name).includes(name)) {
+          alert('Пользователь с таким именем уже существует');
+          return;
+      }
+      this.playersList.push({
+          'name': name,
+          'life': life,
+      })
+    },
+    showMenu() {
+      let radios = document.getElementsByName('menu');
+      for (let radio of radios) {
+        if (radio.checked) {
+          if (radio.value === 'create') {
+            this.showCreate = true
+            this.showEdit = false
+          } else if(radio.value === 'edit') {
+            this.showEdit = true
+            this.showCreate = false
+          }
+        }
+      }
+    },
+
+    plusLife (index) {
+      this.playersList[index].life++
+    },
+
+    minusLife (index) {
+      if(this.playersList[index].life > 0) {
+        this.playersList[index].life--
+      } else {
+        this.playersList[index].life = 0
+      }
+    },
   },
 }
 </script>
@@ -41,4 +82,33 @@ export default {
   margin: 60px auto;
   width: 600px;
 }
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+}
+
+.menu__input {
+  display: none;
+}
+
+.menu__create,
+.menu__edit {
+  transition: 0.2s;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.menu__create:hover,
+.menu__edit:hover {
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+input[type="radio"]:checked + label {
+  border-bottom: 1px solid;
+  padding-bottom: 7px;
+  opacity: 1;
+}
+
 </style>

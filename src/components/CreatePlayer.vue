@@ -1,10 +1,9 @@
 <template>
-    <h1>Добавить нового игрока</h1>
-    <div class="row">
-        <input id="name" type="text" v-model="players_name" placeholder="Имя"/>
-        <input id="life" type="number" v-model="players_life" placeholder="Жизней" />
-        <button type="button" v-on:click="createPlayer">Создать</button>
-    </div>
+    <form class="create row">
+        <input class="create__input" id="name" type="text" v-model="players_name" placeholder="Имя"/>
+        <input class="create__input" id="life" type="number" min="0" v-model="players_life" placeholder="Жизней" />
+        <button class="create__btn" type="submit" v-on:click="createPlayer">Создать</button>
+    </form>
 </template>
 
 
@@ -14,15 +13,14 @@ export default {
   
   data () {
     return {
-      players: [],
       players_name: '',
-      players_life: ''
+      players_life: '',
     };
   },
   
   methods: {
-    createPlayer() {
-
+    createPlayer(e) {
+        e.preventDefault()
         if(this.players_name === '' || this.players_name === undefined) {
             alert('Укажите имя');
             return;
@@ -34,19 +32,14 @@ export default {
         }
 
         if(this.players_life <= 0) {
-            alert('Значение не может быть больше нуля');
+            alert('Значение не может быть меньше или равно нулю');
             return;
         }
 
-        this.players.push({
-            'name': this.players_name,
-            'life': this.players_life,
-        })
+        this.$emit('players-list', this.players_name, this.players_life);
 
         this.players_name = '';
         this.players_life = '';
-
-        this.$emit('players-list', this.players);
     }
   },
 }
@@ -59,16 +52,62 @@ export default {
 
         input {
             margin-right: 12px;
-            width: 100%;
+            width: 60%;
             height: 24px;
-        }
-
-        button {
-            width: 70px;
         }
     }
 
     #life {
-        width: 70px;
+        width: 20%;
+    }
+
+    .create__input {
+      display: block;
+      width: 100%;
+      height: calc(2.25rem + 2px);
+      padding: 0.375rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #212529;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #bdbdbd;
+      border-radius: 0.25rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .create__input::placeholder {
+      color: #212529;
+      opacity: 0.4;
+    }
+
+    .create__input:focus {
+      color: #212529;
+      background-color: #fff;
+      border-color: #bdbdbd;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
+    }
+
+    .create__input:disabled,
+    .create__input[readonly] {
+      background-color: #f5f5f5;
+      opacity: 1;
+    }
+
+    .create__btn {
+        background-color: #eee;
+        border-radius: 0.25rem;
+        border: 0 solid #eee;
+        height: 38px;
+        width: 20%;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .create__btn:hover {
+        cursor: pointer;
+        opacity: 0.7;
     }
 </style>
