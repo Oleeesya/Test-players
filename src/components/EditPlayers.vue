@@ -5,7 +5,7 @@
     :key="index"
     class="edit row"
   >
-      <input class="edit__name" id="name" :value="isValidName ? item.name : playersList[index].name" @input="event => changeName(index, event.target.value, item.name)">
+      <input class="edit__name" id="name" :value="isValidName ? item.name : playersList[index].name" @change="event => changeName(index, event.target.value, item.name)">
       <button class="edit__button" href="#" @click.prevent="minusLife(index)">-</button>
       <span class="edit__lifeCount">{{item.life}}</span>
       <button class="edit__button" href="#" @click.prevent="plusLife(index)">+</button>
