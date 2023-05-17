@@ -3,12 +3,14 @@
   <div
     v-for="(item, index) in playersList"
     :key="index"
-    class="edit row"
   >
-      <input class="edit__name" id="name" :value="isValidName ? item.name : playersList[index].name" @change="event => changeName(index, event.target.value, item.name)">
-      <button class="edit__button" href="#" @click.prevent="minusLife(index)">-</button>
-      <span class="edit__lifeCount">{{item.life}}</span>
-      <button class="edit__button" href="#" @click.prevent="plusLife(index)">+</button>
+    <div class="edit row">
+        <input class="edit__name" id="name" type="text" @input="clearError" :value="item.name" @change="event => changeName(index, event.target.value)">
+        <button class="edit__button" href="#" @click.prevent="minusLife(index)">-</button>
+        <span class="edit__lifeCount">{{item.life}}</span>
+        <button class="edit__button" href="#" @click.prevent="plusLife(index)">+</button>
+    </div>
+    <ErrorMessage :message="editPlayerErorr" v-if="index === this.unValidIndex" />
   </div>
   
   <h2>Рейтинг</h2>
@@ -25,8 +27,14 @@
 </template>
 
 <script>
+import ErrorMessage from './ErrorMessage.vue'
+
 export default {
   name: 'EditPlayers',
+
+  components: {
+    ErrorMessage,
+  },
 
   props: {
     playersList: {
@@ -36,7 +44,8 @@ export default {
   
   data () {
     return {
-      isValidName: true
+      editPlayerErorr: '',
+      unValidIndex: 0,
     };
   },
   
@@ -60,16 +69,21 @@ export default {
       this.$emit('minus-life', index);
     },
     
-    changeName(index, newName) {
-      this.isValidName = true
+    changeName (index, newName) {
+
       if(this.playersList.filter(item => this.playersList.indexOf(item) !== index).map(item => item.name).includes(newName)) {
-          alert('Пользователь с таким именем уже существует');
-          this.isValidName = false
-          return
-      }      
+        this.unValidIndex = index
+        this.editPlayerErorr = 'Пользователь с таким именем уже существует'
+        return newName
+      }     
+       
       this.$emit('change-name', index, newName);
       return newName
-    }
+    },
+
+    clearError () {
+      this.editPlayerErorr = ''
+    },
   },
 }
 </script>

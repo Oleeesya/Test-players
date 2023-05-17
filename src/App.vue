@@ -9,8 +9,10 @@
         <h1>Редактирование игроков</h1>
     </label>
   </div>
-  <CreatePlayer @players-list="createPlayers" v-show="showCreate" />
-  <EditPlayers @change-name="changeName" @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList" v-show="showEdit" />
+  <CreatePlayer @create-player="createPlayers" :playersList="playersList" @set-create-player-error="setCreatePlayerError"
+  v-show="showCreate" />
+  <EditPlayers @change-name="changeName" @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList"
+  v-show="showEdit" />
 </template>
 
 <script>
@@ -33,10 +35,6 @@ export default {
 
   methods: {
     createPlayers(name, life) {
-      if(this.playersList.map(item => item.name).includes(name)) {
-          alert('Пользователь с таким именем уже существует');
-          return;
-      }
       this.playersList.push({
           'name': name,
           'life': life,

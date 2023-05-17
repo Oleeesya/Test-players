@@ -1,20 +1,36 @@
 <template>
+  <div>
     <form class="create row">
-        <input class="create__input" id="name" type="text" v-model="players_name" placeholder="Имя"/>
-        <input class="create__input" id="life" type="number" min="0" v-model="players_life" placeholder="Жизней" />
+        <input class="create__input" id="name" type="text" @input="clearError" v-model="players_name" placeholder="Имя"/>
+        <input class="create__input" id="life" type="number" min="0" @input="clearError" v-model="players_life" placeholder="Жизней" />
         <button class="create__btn" type="submit" v-on:click="createPlayer">Создать</button>
     </form>
+    <ErrorMessage :message="createPlayerError" />
+  </div>
 </template>
 
 
 <script>
+import ErrorMessage from './ErrorMessage.vue'
+
 export default {
   name: 'CreatePlayer',
+
+  components: {
+    ErrorMessage,
+  },
+
+  props: {
+    playersList: {
+      type: Array
+    },
+  },
   
   data () {
     return {
       players_name: '',
       players_life: '',
+      createPlayerError: '',
     };
   },
   
@@ -22,24 +38,30 @@ export default {
     createPlayer(e) {
         e.preventDefault()
         if(this.players_name === '' || this.players_name === undefined) {
-            alert('Укажите имя');
-            return;
+          this.createPlayerError = 'Укажите имя'
+          return;
         }
 
         if(this.players_life === '' || this.players_life === undefined) {
-            alert('Укажите количество жизней');
-            return;
+          this.createPlayerError = 'Укажите количество жизней'
+          return;
         }
 
         if(this.players_life <= 0) {
-            alert('Значение не может быть меньше или равно нулю');
-            return;
+          this.createPlayerError = 'Значение жизней не может быть меньше или равно нулю'
+          return;
         }
 
-        this.$emit('players-list', this.players_name, this.players_life);
-
+        if(this.playersList.map(item => item.name).includes(this.players_name)) {
+          this.createPlayerError = 'Пользователь с таким именем уже существует'
+          return;
+        }
+        this.$emit('create-player', this.players_name, this.players_life);
         this.players_name = '';
         this.players_life = '';
+    },
+    clearError() {
+      this.createPlayerError = ''
     }
   },
 }
