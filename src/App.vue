@@ -9,10 +9,11 @@
         <h1>Редактирование игроков</h1>
     </label>
   </div>
-  <CreatePlayer @create-player="createPlayers" :playersList="playersList" @set-create-player-error="setCreatePlayerError"
-  v-show="showCreate" />
-  <EditPlayers @change-name="changeName" @plus-life="plusLife" @minus-life="minusLife" :playersList="playersList"
-  v-show="showEdit" />
+  <keep-alive>
+    <component v-bind:is="currentTabComponent" @create-player="createPlayers" :playersList="playersList"
+      @set-create-player-error="setCreatePlayerError" @change-name="changeName" @plus-life="plusLife" @minus-life="minusLife">
+    </component>
+  </keep-alive>
 </template>
 
 <script>
@@ -30,6 +31,12 @@ export default {
       playersList: [],
       showCreate: true,
       showEdit: false,
+    }
+  },
+
+  computed: {
+    currentTabComponent() {
+      return this.showCreate ? 'CreatePlayer' : 'EditPlayers'
     }
   },
 
